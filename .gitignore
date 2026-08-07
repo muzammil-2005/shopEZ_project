@@ -37,3 +37,7 @@ Thumbs.db
 *.njsproj
 *.sln
 *.swp
+.env
+node_modules/
+dist/
+build/
