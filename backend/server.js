@@ -19,14 +19,21 @@ connectDB().then(() => {
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CLIENT_URL,
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+];
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || 
-        origin === process.env.CLIENT_URL || 
-        origin.endsWith('.vercel.app') || 
-        origin.endsWith('.loca.lt') ||
-        origin.includes('localhost') ||
-        origin.includes('127.0.0.1')) {
+        allowedOrigins.includes(origin) || 
+        (origin && origin.endsWith('.vercel.app'))) {
       callback(null, true);
     } else {
       callback(null, true);
@@ -48,11 +55,11 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Health check API routes
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'success', message: 'ShopEZ REST API Server is running...', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', message: 'ShopEZ backend is running', timestamp: new Date().toISOString() });
 });
 
 app.get('/', (req, res) => {
-  res.json({ status: 'success', message: 'ShopEZ REST API Server is running...' });
+  res.json({ status: 'ok', message: 'ShopEZ backend is running' });
 });
 
 // Error handling middleware
@@ -61,6 +68,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });

@@ -1,6 +1,6 @@
 # ShopEZ - Production-Ready Full-Stack MERN E-Commerce Application
 
-ShopEZ is a feature-complete, modern full-stack MERN (MongoDB, Express, React, Node.js) e-commerce web application. Built with clean architecture, JWT role-based authentication, interactive Chart.js admin analytics, wishlist, cart, checkout, order tracking, and product reviews.
+ShopEZ is a feature-complete, modern full-stack MERN (MongoDB, Express, React, Node.js) e-commerce web application. Built with clean architecture, JWT role-based authentication, interactive Chart.js admin analytics, wishlist, cart drawer, quick view modal, multi-step checkout, order tracking, and product reviews.
 
 ---
 
@@ -9,8 +9,8 @@ ShopEZ is a feature-complete, modern full-stack MERN (MongoDB, Express, React, N
 ### User Features
 - **Authentication**: User Registration, Login, Logout, Profile Management, and Password Updates.
 - **Product Discovery**: Dynamic product search, category filtering, brand filtering, price sliders, star rating filtering, and sorting (price low-high, high-low, newest, top rated).
-- **Product Details**: High-resolution image preview, discount badges, stock indicators, customer reviews list, and review submission.
-- **Shopping Cart**: Real-time quantity controls, subtotal calculation, free shipping thresholds, and database synchronization.
+- **Product Details & Quick View**: High-resolution image preview, discount badges, stock indicators, customer reviews list, review submission, and quick view modal preview.
+- **Shopping Cart & Cart Drawer**: Real-time quantity controls, subtotal calculation, free shipping progress bar, promo code applicator (`SHOPEZ20`), and database synchronization.
 - **Wishlist**: Save favorite items, remove items, and move items directly into cart.
 - **Checkout & Orders**: Multi-step checkout with address validation, choice of Cash on Delivery / Demo Online Payment, order invoice generation, and order history tracking.
 
@@ -25,7 +25,7 @@ ShopEZ is a feature-complete, modern full-stack MERN (MongoDB, Express, React, N
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React 18, React Router DOM v6, Axios, Bootstrap 5, Bootstrap Icons, Chart.js, react-chartjs-2.
+- **Frontend**: React 18, React Router DOM v6, Axios, Bootstrap 5, Bootstrap Icons, Chart.js, react-chartjs-2, Vite.
 - **Backend**: Node.js, Express.js, MongoDB, Mongoose, JWT (JSON Web Tokens), bcryptjs, CORS, dotenv.
 
 ---
@@ -67,8 +67,6 @@ shopez/
 │   │   └── wishlistRoutes.js
 │   ├── utils/
 │   │   └── generateToken.js
-│   ├── .env
-│   ├── .env.example
 │   ├── package.json
 │   ├── seeder.js
 │   └── server.js
@@ -78,11 +76,15 @@ shopez/
     │   ├── components/
     │   │   ├── AdminRoute.jsx
     │   │   ├── AlertMessage.jsx
+    │   │   ├── CartDrawer.jsx
+    │   │   ├── DealsTicker.jsx
     │   │   ├── Footer.jsx
+    │   │   ├── HeroSection.jsx
     │   │   ├── LoadingSpinner.jsx
     │   │   ├── Navbar.jsx
     │   │   ├── PrivateRoute.jsx
     │   │   ├── ProductCard.jsx
+    │   │   ├── QuickViewModal.jsx
     │   │   └── Rating.jsx
     │   ├── context/
     │   │   ├── AuthContext.jsx
@@ -115,6 +117,7 @@ shopez/
     │   └── main.jsx
     ├── index.html
     ├── package.json
+    ├── vercel.json
     └── vite.config.js
 ```
 
@@ -129,19 +132,17 @@ shopez/
 
 ---
 
-## 🚀 Setup & Startup Instructions
+## 💻 Local Development Instructions
 
 ### 1. Backend Setup
-
 ```bash
 cd backend
 npm install
-npm run seed     # Populates MongoDB with 15 sample products, admin, and demo user
+node seeder.js   # Populates MongoDB Atlas/Local DB with 128 products, users, & sample orders
 npm start        # Starts Express server at http://localhost:5000
 ```
 
 ### 2. Frontend Setup
-
 ```bash
 cd frontend
 npm install
@@ -150,8 +151,34 @@ npm run dev      # Launches Vite React client at http://localhost:3000
 
 ---
 
+## ☁️ Permanent Production Cloud Deployment Instructions
+
+### 1. Backend Deployment (Render)
+- **Repository**: `https://github.com/muzammil-2005/shopEZ_project.git`
+- **Root Directory**: `backend`
+- **Build Command**: `npm install`
+- **Start Command**: `npm start`
+- **Health Check Path**: `/api/health`
+- **Environment Variables**:
+  - `MONGODB_URI`: `mongodb+srv://muzammil:muzammil123@cluster0.x5xvh.mongodb.net/shopez_db?retryWrites=true&w=majority`
+  - `JWT_SECRET`: `shopez_super_secret_jwt_key_2026`
+  - `NODE_ENV`: `production`
+  - `FRONTEND_URL`: `https://YOUR-VERCEL-APP.vercel.app`
+
+### 2. Frontend Deployment (Vercel)
+- **Repository**: `https://github.com/muzammil-2005/shopEZ_project.git`
+- **Root Directory**: `frontend`
+- **Framework Preset**: `Vite`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Environment Variables**:
+  - `VITE_API_URL`: `https://YOUR-RENDER-BACKEND.onrender.com`
+
+---
+
 ## 🌐 API Overview
 
+- `GET /api/health` - Backend health check
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `GET /api/products` - Fetch products with query filters (search, category, brand, price, rating, sort, pagination)
