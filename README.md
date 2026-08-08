@@ -160,10 +160,10 @@ npm run dev      # Launches Vite React client at http://localhost:3000
 - **Start Command**: `npm start`
 - **Health Check Path**: `/api/health`
 - **Environment Variables**:
-  - `MONGODB_URI`: `mongodb+srv://muzammil:muzammil123@cluster0.x5xvh.mongodb.net/shopez_db?retryWrites=true&w=majority`
-  - `JWT_SECRET`: `shopez_super_secret_jwt_key_2026`
+  - `MONGODB_URI`: `mongodb+srv://nmuzammil2005_db_user:muzammil123@cluster0.trjuqqz.mongodb.net/shopez_db?retryWrites=true&w=majority`
+  - `JWT_SECRET`: `shopez_super_secret_jwt_key_2026_production_ready`
   - `NODE_ENV`: `production`
-  - `FRONTEND_URL`: `https://YOUR-VERCEL-APP.vercel.app`
+  - `FRONTEND_URL`: `https://shopez-storefront.vercel.app`
 
 ### 2. Frontend Deployment (Vercel)
 - **Repository**: `https://github.com/muzammil-2005/shopEZ_project.git`
@@ -172,7 +172,7 @@ npm run dev      # Launches Vite React client at http://localhost:3000
 - **Build Command**: `npm run build`
 - **Output Directory**: `dist`
 - **Environment Variables**:
-  - `VITE_API_URL`: `https://YOUR-RENDER-BACKEND.onrender.com`
+  - `VITE_API_URL`: `https://shopez-project-t6iy.onrender.com`
 
 ---
 
