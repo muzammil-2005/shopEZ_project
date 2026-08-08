@@ -20,6 +20,7 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
+  'https://shopez-storefront.vercel.app',
   process.env.FRONTEND_URL,
   process.env.CLIENT_URL,
   'http://localhost:3000',
@@ -27,20 +28,25 @@ const allowedOrigins = [
   'http://localhost:3002',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:3001',
-];
+].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || 
-        allowedOrigins.includes(origin) || 
-        (origin && origin.endsWith('.vercel.app'))) {
-      callback(null, true);
-    } else {
-      callback(null, true);
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || (origin && origin.endsWith('.vercel.app'))) {
+      return callback(null, origin);
     }
+    return callback(null, origin);
   },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   credentials: true,
+  optionsSuccessStatus: 200,
 }));
+
+// Enable preflight OPTIONS handling for all routes
+app.options('*', cors());
+
 app.use(express.json());
 
 // Routes
