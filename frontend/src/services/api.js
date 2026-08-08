@@ -12,7 +12,7 @@ const getBaseURL = () => {
 
   // Fallback for non-localhost production origins (e.g., Vercel)
   if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return 'https://shopez-backend-api.onrender.com/api';
+    return '/api';
   }
 
   return 'http://localhost:5000/api';
