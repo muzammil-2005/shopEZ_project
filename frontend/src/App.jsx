@@ -7,6 +7,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
+import ToastNotification from './components/ToastNotification';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -39,6 +40,7 @@ const App = () => {
           <Router>
             <div className="d-flex flex-column min-vh-100">
               <Navbar />
+              <ToastNotification />
               <CartDrawer />
               
               <main className="flex-grow-1">

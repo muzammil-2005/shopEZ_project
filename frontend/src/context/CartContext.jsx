@@ -8,6 +8,7 @@ export const CartProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [cart, setCart] = useState({ items: [], totalPrice: 0 });
   const [loading, setLoading] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [toastInfo, setToastInfo] = useState({ show: false, product: null });
 
   const showToast = (product) => {
@@ -56,7 +57,7 @@ export const CartProvider = ({ children }) => {
       }
 
       const { data } = await API.get('/cart');
-      setCart(data);
+      setCart(data || { items: [], totalPrice: 0 });
       setLoading(false);
     } catch (err) {
       if (err.response && err.response.status === 401) {
@@ -102,6 +103,7 @@ export const CartProvider = ({ children }) => {
     setCart(newCart);
     localStorage.setItem('shopez_cart', JSON.stringify(newCart));
 
+    setIsCartOpen(true);
     if (targetProduct) showToast(targetProduct);
     return { success: true };
   };
@@ -114,21 +116,21 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const { data } = await API.post('/cart', { productId, quantity });
-      setCart(data);
+      setCart(data || { items: [], totalPrice: 0 });
       setLoading(false);
 
-      const addedItem = data.items.find(
-        (i) => (i.product?._id || i.product) === productId
-      );
+      const addedItem = data && data.items
+        ? data.items.find((i) => (i.product?._id || i.product) === productId)
+        : null;
       const targetProduct = addedItem ? addedItem.product : productDetails;
 
+      setIsCartOpen(true);
       if (targetProduct) showToast(targetProduct);
 
       return { success: true };
     } catch (err) {
       setLoading(false);
 
-      // If token expired / 401, auto-fallback to local guest cart so user is never blocked!
       if (err.response && err.response.status === 401) {
         console.warn('401 detected in addToCart. Falling back to local cart...');
         localStorage.removeItem('shopez_user');
@@ -146,7 +148,7 @@ export const CartProvider = ({ children }) => {
     if (quantity <= 0) return removeFromCart(productId);
 
     if (!user) {
-      const currentItems = cart.items.map((item) => {
+      const currentItems = (cart.items || []).map((item) => {
         const id = item.product._id || item.product;
         if (id === productId) {
           return { ...item, quantity };
@@ -166,7 +168,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const { data } = await API.put(`/cart/${productId}`, { quantity });
-      setCart(data);
+      setCart(data || { items: [], totalPrice: 0 });
       setLoading(false);
     } catch (err) {
       if (err.response && err.response.status === 401) {
@@ -178,7 +180,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (productId) => {
     if (!user) {
-      const currentItems = cart.items.filter(
+      const currentItems = (cart.items || []).filter(
         (item) => (item.product._id || item.product) !== productId
       );
       const totalPrice = currentItems.reduce(
@@ -194,7 +196,7 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const { data } = await API.delete(`/cart/${productId}`);
-      setCart(data);
+      setCart(data || { items: [], totalPrice: 0 });
       setLoading(false);
     } catch (err) {
       if (err.response && err.response.status === 401) {
@@ -219,8 +221,12 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const cartItemCount = cart.items
+  const cartItemCount = cart && cart.items
     ? cart.items.reduce((acc, item) => acc + item.quantity, 0)
+    : 0;
+
+  const subtotal = cart && cart.items
+    ? cart.items.reduce((acc, item) => acc + (item.price || item.product?.price || 0) * item.quantity, 0)
     : 0;
 
   return (
@@ -229,6 +235,9 @@ export const CartProvider = ({ children }) => {
         cart,
         loading,
         cartItemCount,
+        subtotal,
+        isCartOpen,
+        setIsCartOpen,
         addToCart,
         updateQuantity,
         removeFromCart,

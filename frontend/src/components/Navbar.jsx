@@ -129,12 +129,13 @@ const Navbar = () => {
               )}
             </Link>
 
-            {/* Quick Cart Drawer Trigger */}
-            <button
-              onClick={() => setIsCartOpen(true)}
+            {/* Quick Cart Drawer & Cart Page Link */}
+            <Link
+              to="/cart"
+              onClick={() => setIsCartOpen && setIsCartOpen(true)}
               className="btn btn-light rounded-circle position-relative p-2 shadow-sm d-flex align-items-center justify-content-center"
               style={{ width: '40px', height: '40px' }}
-              title="Cart Drawer"
+              title="View Shopping Cart"
             >
               <i className="bi bi-cart3 fs-5 text-primary"></i>
               {cartItemCount > 0 && (
@@ -142,7 +143,7 @@ const Navbar = () => {
                   {cartItemCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* User Account / Auth Buttons */}
             {user ? (
