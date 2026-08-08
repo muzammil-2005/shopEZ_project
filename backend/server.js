@@ -19,7 +19,21 @@ connectDB().then(() => {
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || 
+        origin === process.env.CLIENT_URL || 
+        origin.endsWith('.vercel.app') || 
+        origin.endsWith('.loca.lt') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1')) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes
@@ -32,9 +46,13 @@ app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
-// Health check API
+// Health check API routes
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'success', message: 'ShopEZ REST API Server is running...', timestamp: new Date().toISOString() });
+});
+
 app.get('/', (req, res) => {
-  res.json({ message: 'ShopEZ REST API Server is running...' });
+  res.json({ status: 'success', message: 'ShopEZ REST API Server is running...' });
 });
 
 // Error handling middleware

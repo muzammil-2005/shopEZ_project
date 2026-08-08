@@ -1,19 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// Providers
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 
-// Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ToastNotification from './components/ToastNotification';
-import ProtectedRoute from './components/ProtectedRoute';
+import CartDrawer from './components/CartDrawer';
+import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 
-// Pages
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
@@ -21,14 +17,13 @@ import CartPage from './pages/CartPage';
 import WishlistPage from './pages/WishlistPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderConfirmationPage from './pages/OrderConfirmationPage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
+import MyOrdersPage from './pages/MyOrdersPage';
+import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ProfilePage from './pages/ProfilePage';
-import MyOrdersPage from './pages/MyOrdersPage';
-import OrderDetailsPage from './pages/OrderDetailsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-// Admin Pages
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminProductsPage from './pages/AdminProductsPage';
 import AdminProductFormPage from './pages/AdminProductFormPage';
@@ -36,15 +31,16 @@ import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminReviewsPage from './pages/AdminReviewsPage';
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <div className="d-flex flex-column min-vh-100 app-bg-mesh">
+    <AuthProvider>
+      <CartProvider>
+        <WishlistProvider>
+          <Router>
+            <div className="d-flex flex-column min-vh-100">
               <Navbar />
-              <ToastNotification />
+              <CartDrawer />
+              
               <main className="flex-grow-1">
                 <Routes>
                   {/* Public Routes */}
@@ -56,117 +52,38 @@ function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
 
-                  {/* Customer Protected Routes */}
-                  <Route
-                    path="/checkout"
-                    element={
-                      <ProtectedRoute>
-                        <CheckoutPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/order-confirmation/:id"
-                    element={
-                      <ProtectedRoute>
-                        <OrderConfirmationPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <ProfilePage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/my-orders"
-                    element={
-                      <ProtectedRoute>
-                        <MyOrdersPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/orders/:id"
-                    element={
-                      <ProtectedRoute>
-                        <OrderDetailsPage />
-                      </ProtectedRoute>
-                    }
-                  />
+                  {/* Private User Routes */}
+                  <Route element={<PrivateRoute />}>
+                    <Route path="/checkout" element={<CheckoutPage />} />
+                    <Route path="/order-confirmation/:id" element={<OrderConfirmationPage />} />
+                    <Route path="/orders" element={<MyOrdersPage />} />
+                    <Route path="/orders/:id" element={<OrderDetailsPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                  </Route>
 
-                  {/* Admin Protected Routes */}
-                  <Route
-                    path="/admin"
-                    element={
-                      <AdminRoute>
-                        <AdminDashboardPage />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/products"
-                    element={
-                      <AdminRoute>
-                        <AdminProductsPage />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/products/new"
-                    element={
-                      <AdminRoute>
-                        <AdminProductFormPage />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/products/:id/edit"
-                    element={
-                      <AdminRoute>
-                        <AdminProductFormPage />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/orders"
-                    element={
-                      <AdminRoute>
-                        <AdminOrdersPage />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/users"
-                    element={
-                      <AdminRoute>
-                        <AdminUsersPage />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/reviews"
-                    element={
-                      <AdminRoute>
-                        <AdminReviewsPage />
-                      </AdminRoute>
-                    }
-                  />
+                  {/* Private Admin Routes */}
+                  <Route element={<AdminRoute />}>
+                    <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+                    <Route path="/admin/products" element={<AdminProductsPage />} />
+                    <Route path="/admin/products/new" element={<AdminProductFormPage />} />
+                    <Route path="/admin/products/edit/:id" element={<AdminProductFormPage />} />
+                    <Route path="/admin/orders" element={<AdminOrdersPage />} />
+                    <Route path="/admin/users" element={<AdminUsersPage />} />
+                    <Route path="/admin/reviews" element={<AdminReviewsPage />} />
+                  </Route>
 
-                  {/* 404 Route */}
+                  {/* Catch-all 404 */}
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>
+
               <Footer />
             </div>
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
-    </Router>
+          </Router>
+        </WishlistProvider>
+      </CartProvider>
+    </AuthProvider>
   );
-}
+};
 
 export default App;
