@@ -1914,6 +1914,10 @@ const importData = async (exitOnComplete = true) => {
 
 const autoSeedIfEmpty = async () => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      console.log('[AutoSeed] MongoDB connection not ready. Skipping auto-seed check.');
+      return;
+    }
     const productCount = await Product.countDocuments();
     if (productCount === 0) {
       console.log('[AutoSeed] Empty database detected. Auto-seeding initial collections...');
