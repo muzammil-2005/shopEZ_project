@@ -7,6 +7,12 @@ const calculateCartTotal = (items) => {
   return items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 };
 
+// Helper to safely extract string Product ID from populated or unpopulated item
+const getItemProductId = (item) => {
+  if (!item || !item.product) return '';
+  return item.product._id ? item.product._id.toString() : item.product.toString();
+};
+
 // @desc    Get logged in user's cart
 // @route   GET /api/cart
 // @access  Private
@@ -51,7 +57,7 @@ const addToCart = asyncHandler(async (req, res) => {
     });
   } else {
     const itemIndex = cart.items.findIndex(
-      (item) => item.product.toString() === productId
+      (item) => getItemProductId(item) === productId
     );
 
     if (itemIndex > -1) {
@@ -105,7 +111,7 @@ const updateCartItemQuantity = asyncHandler(async (req, res) => {
 
   if (cart) {
     const itemIndex = cart.items.findIndex(
-      (item) => item.product.toString() === productId
+      (item) => getItemProductId(item) === productId
     );
 
     if (itemIndex > -1) {
@@ -135,7 +141,7 @@ const removeFromCart = asyncHandler(async (req, res) => {
 
   if (cart) {
     cart.items = cart.items.filter(
-      (item) => item.product.toString() !== productId
+      (item) => getItemProductId(item) !== productId
     );
     cart.totalPrice = calculateCartTotal(cart.items);
     await cart.save();
