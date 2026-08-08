@@ -39,7 +39,11 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
       return { success: true, user: data };
     } catch (err) {
-      const message = err.response?.data?.message || 'Login failed. Invalid credentials.';
+      const message =
+        err.response?.data?.message ||
+        (err.message === 'Network Error'
+          ? 'Unable to connect to ShopEZ server. Please check internet/CORS.'
+          : 'Login failed. Invalid credentials.');
       setError(message);
       setLoading(false);
       return { success: false, message };
@@ -62,7 +66,11 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
       return { success: true, user: data };
     } catch (err) {
-      const message = err.response?.data?.message || 'Registration failed.';
+      const message =
+        err.response?.data?.message ||
+        (err.message === 'Network Error'
+          ? 'Unable to connect to ShopEZ backend server. Please try again.'
+          : 'Registration failed. Please check your information and try again.');
       setError(message);
       setLoading(false);
       return { success: false, message };

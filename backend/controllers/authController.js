@@ -18,35 +18,44 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error('Password must be at least 6 characters long');
   }
 
-  const userExists = await User.findOne({ email });
+  const normalizedEmail = email.trim().toLowerCase();
+  const userExists = await User.findOne({ email: normalizedEmail });
 
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists with this email');
+    throw new Error('User already exists with this email address');
   }
 
-  const user = await User.create({
-    name,
-    email,
-    password,
-    phone: phone || '',
-    address: address || {},
-    role: 'USER',
-  });
-
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      address: user.address,
-      role: user.role,
-      token: generateToken(user._id),
+  try {
+    const user = await User.create({
+      name: name.trim(),
+      email: normalizedEmail,
+      password,
+      phone: phone ? phone.trim() : '',
+      address: address || {},
+      role: 'USER',
     });
-  } else {
-    res.status(400);
-    throw new Error('Invalid user data');
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        role: user.role,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400);
+      throw new Error('Invalid user data received');
+    }
+  } catch (error) {
+    if (error.code === 11000) {
+      res.status(400);
+      throw new Error('User already exists with this email address');
+    }
+    throw error;
   }
 });
 
