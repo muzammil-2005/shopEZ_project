@@ -1,3 +1,8 @@
+#DRIVE PROJECT LINK
+https://drive.google.com/drive/folders/1lsoqkI3ZT3yD0knGDZmxD1JPfB5J2ll0?usp=drive_link
+
+
+
 # ShopEZ - Production-Ready Full-Stack MERN E-Commerce Application
 
 ShopEZ is a feature-complete, modern full-stack MERN (MongoDB, Express, React, Node.js) e-commerce web application. Built with clean architecture, JWT role-based authentication, interactive Chart.js admin analytics, wishlist, cart drawer, quick view modal, multi-step checkout, order tracking, and product reviews.
